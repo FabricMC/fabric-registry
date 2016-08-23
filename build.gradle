@@ -1,0 +1,34 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+        	name = "Fabric"
+        	url = "http://maven.fabricmc.net"
+        }
+    }
+    dependencies {
+        classpath "net.fabricmc:fabric-loom:0.0.1-SNAPSHOT"
+    }
+}
+
+plugins {
+    id "idea"
+    id "maven"
+
+    id 'net.minecrell.licenser' version '0.2.1'
+}
+
+apply plugin: "net.fabricmc.loom"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+minecraft {
+    version = mc_version
+    fabricVersion = fabric_version
+}
+
+license {
+    header file('HEADER')
+    include '**/*.java'
+}

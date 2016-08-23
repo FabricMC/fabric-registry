@@ -1,0 +1,9 @@
+{
+	"id": "fabric-registry-test",
+	"group": "net.fabricmc.registry",
+	"version": "0.1.0",
+	"modClass": "net.fabricmc.registry.RegistryMod",
+	"mixins": {
+		"common": "fabric.registry.mixin.common.json"
+	}
+}
