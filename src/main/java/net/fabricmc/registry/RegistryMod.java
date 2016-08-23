@@ -43,7 +43,8 @@ public class RegistryMod {
 		Registries.add(new Identifier("biomes"), Biome.class, new BiomeRegistrationManager());
 
 		Fabric.getLoadingBus().subscribe(this);
-		Fabric.getLoadingBus().subscribe(new RegistryTestMod());
+		// v Uncomment when testing
+		// Fabric.getLoadingBus().subscribe(new RegistryTestMod());
 	}
 
 	@Hook(name = "fabric-registry:initRegistries", before = {}, after = "fabric:modsInitialized")
