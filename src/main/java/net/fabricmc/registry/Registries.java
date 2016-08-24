@@ -16,6 +16,8 @@
 
 package net.fabricmc.registry;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import net.fabricmc.base.Fabric;
 import net.fabricmc.registry.util.RegistrationManager;
 import net.fabricmc.registry.util.exception.RegistryMappingNotFoundException;
@@ -95,8 +97,8 @@ public final class Registries {
     public static void applySerializedIdMap(TagCompound compound) throws RegistryMappingNotFoundException {
         for (Map.Entry<Identifier, RegistrationManager> entry : REGISTRIES.entrySet()) {
             if (compound.hasKey(entry.getKey().toString())) {
-                Map<Integer, Identifier> idMap = new HashMap<>();
                 TagList list = compound.getTagList(entry.getKey().toString(), 10);
+                BiMap<Integer, Identifier> idMap = HashBiMap.create(list.getSize());
                 for (int i = 0; i < list.getSize(); i++) {
                     TagCompound entryTag = list.getTagCompound(i);
                     if (entryTag.hasKey("id") && entryTag.hasKey("name")) {

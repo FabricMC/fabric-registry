@@ -50,13 +50,7 @@ public class RegistryMod {
 
 		Fabric.getLoadingBus().subscribe(this);
 		// v Uncomment when testing
-		Fabric.getLoadingBus().subscribe(new RegistryTestMod());
-	}
-
-	// TODO: Hook me
-	private void initClient() {
-		blockRM.registerRemapListener((IRemapListener) Minecraft.getInstance().getBlockColorMap());
-		itemRM.registerRemapListener((IRemapListener) Minecraft.getInstance().itemColorMap);
+		// Fabric.getLoadingBus().subscribe(new RegistryTestMod());
 	}
 
 	@Hook(name = "fabric-registry:initRegistries", before = {}, after = "fabric:modsInitialized")

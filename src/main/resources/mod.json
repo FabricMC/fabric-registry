@@ -4,7 +4,6 @@
 	"version": "0.1.0",
 	"modClass": "net.fabricmc.registry.RegistryMod",
 	"mixins": {
-		"client": "fabric.registry.mixin.client.json",
-		"common": "fabric.registry.mixin.common.json"
+		"client": "fabric.registry.mixin.client.json"
 	}
 }

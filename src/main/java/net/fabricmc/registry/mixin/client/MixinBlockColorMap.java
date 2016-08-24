@@ -16,32 +16,13 @@ import java.util.Map;
 public class MixinBlockColorMap implements IRemapListener {
     @Shadow
     public IdList<IBlockColorMapper> mappers;
-    private Map<Block, IBlockColorMapper> remapTemp;
 
     @Override
     public void onBeforeRemap() {
-        if (remapTemp == null) {
-            remapTemp = new HashMap<>();
-        }
-
-        for (int i = 0; i < mappers.size(); i++) {
-            IBlockColorMapper mapper = mappers.get(i);
-            if (mapper != null) {
-                Block b = Block.getBlockByRawId(i);
-                if (b != null) {
-                    remapTemp.put(b, mapper);
-                }
-            }
-        }
-        RegistryModUtils.clear(mappers);
     }
 
     @Override
-    public void onAfterRemap() {
-        BlockColorMap mapper = (BlockColorMap) ((Object) this);
-        for (Map.Entry<Block, IBlockColorMapper> entry : remapTemp.entrySet()) {
-            mapper.register(entry.getValue(), entry.getKey());
-        }
-        remapTemp.clear();
+    public void onAfterRemap(Map<Integer, Integer> idRemapTable) {
+        RegistryModUtils.remapIdList(idRemapTable, mappers);
     }
 }

@@ -16,6 +16,8 @@
 
 package net.fabricmc.registry.util;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.Maps;
 import net.fabricmc.registry.util.exception.RegistryMappingNotFoundException;
 import net.minecraft.util.Identifier;
 
@@ -54,7 +56,7 @@ public abstract class RegistrationManager<V> implements IRemapListener {
     }
 
     @Override
-    public void onAfterRemap() {
+    public void onAfterRemap(Map<Integer, Integer> idRemapTable) {
 
     }
 
@@ -92,12 +94,16 @@ public abstract class RegistrationManager<V> implements IRemapListener {
         return missingIdsLocal;
     }
 
-    public void remap(Map<Integer, Identifier> idMap, boolean ignoreMissingEntries) throws RegistryMappingNotFoundException {
+    public void remap(BiMap<Integer, Identifier> idMap, boolean ignoreMissingEntries) throws RegistryMappingNotFoundException {
         Map<Identifier, V> valueMap = new HashMap<>();
+        Map<Identifier, Integer> oldIds = new HashMap<>();
+        Map<Identifier, Integer> newIds = new HashMap<>(idMap.inverse());
+        Map<Integer, Integer> idRemapTable = new HashMap<>();
         Set<Identifier> missingIdsMap = new HashSet<>();
 
         for (V value : getValues()) {
             Identifier id = getId(value);
+            oldIds.put(id, getRawId(value));
             valueMap.put(id, value);
             if (!idMap.containsValue(id)) {
                 missingIdsMap.add(id);
@@ -122,11 +128,21 @@ public abstract class RegistrationManager<V> implements IRemapListener {
         }
 
         for (Identifier id : missingIdsMap) {
-            register(id, valueMap.get(id));
+            V value = valueMap.get(id);
+            register(id, value);
+            newIds.put(id, getRawId(value));
+        }
+
+        for (Map.Entry<Identifier, Integer> oldId : oldIds.entrySet()) {
+            int oldRawId = oldId.getValue().intValue();
+            int newRawId = newIds.get(oldId.getKey()).intValue();
+            if (oldRawId != newRawId) {
+                idRemapTable.put(oldRawId, newRawId);
+            }
         }
 
         for (IRemapListener listener : remapListeners) {
-            listener.onAfterRemap();
+            listener.onAfterRemap(idRemapTable);
         }
     }
 

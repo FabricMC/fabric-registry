@@ -22,7 +22,7 @@ import net.minecraft.item.block.ItemBlock;
 import net.minecraft.util.Identifier;
 
 public class RegistryTestMod {
-    private static final Identifier TESTBLOCK_ID = new Identifier("fabricregistrytest", "testblock");
+    public static final Identifier TESTBLOCK_ID = new Identifier("fabricregistrytest", "testblock");
     private Block testBlock;
 
     @Hook(name = "fabric-registry-test:modsInitialized", before = {}, after = {"fabric:modsInitialized"})

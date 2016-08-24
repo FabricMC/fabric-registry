@@ -4,7 +4,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinBlockColorMap",
-    "MixinItemColorMap"
+    "MixinItemColorMap",
+    "MixinItemModelMap",
+    "MixinMinecraft"
   ],
   "injectors": {
     "defaultRequire": 1
