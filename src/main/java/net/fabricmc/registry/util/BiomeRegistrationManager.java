@@ -25,25 +25,18 @@ public class BiomeRegistrationManager extends IdRegistrationManager<Biome> {
     }
 
     @Override
-    protected void onPreRemap() {
-        super.onPreRemap();
+    public void onBeforeRemap() {
+        super.onBeforeRemap();
         Biome.BIOMES.clear();
         Biome.j.idMap.clear();
         Biome.j.list.clear();
     }
 
     @Override
-    protected void onPostRemap() {
-        super.onPostRemap();
-        for (Biome value : registry) {
-            Biome.BIOMES.add(value);
-        }
-    }
-
-    @Override
     protected boolean registerInternal(int rawId, Identifier id, Biome value) {
         try {
             Biome.register(rawId, id.toString(), value);
+            Biome.BIOMES.add(value);
             return true;
         } catch (Exception e) {
             return false;

@@ -17,14 +17,17 @@
 package net.fabricmc.registry;
 
 import net.fabricmc.api.Hook;
+import net.fabricmc.api.Side;
 import net.fabricmc.base.Fabric;
 import net.fabricmc.base.loader.Init;
 import net.fabricmc.registry.util.BiomeRegistrationManager;
 import net.fabricmc.registry.util.BlockRegistrationManager;
 import net.fabricmc.registry.util.EntityRegistrationManager;
+import net.fabricmc.registry.util.IRemapListener;
 import net.fabricmc.registry.util.IdRegistrationManager;
 import net.fabricmc.registry.util.ItemRegistrationManager;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.block.ItemBlock;
@@ -33,10 +36,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 
 public class RegistryMod {
+	public static BlockRegistrationManager blockRM;
+	public static ItemRegistrationManager itemRM;
+
 	@Init
 	public void init() {
-		Registries.add(new Identifier("blocks"), Block.class, new BlockRegistrationManager());
-		Registries.add(new Identifier("items"), Item.class, new ItemRegistrationManager());
+		Registries.add(new Identifier("blocks"), Block.class, blockRM = new BlockRegistrationManager());
+		Registries.add(new Identifier("items"), Item.class, itemRM = new ItemRegistrationManager());
 		Registries.add(new Identifier("entities"), Class.class, new EntityRegistrationManager());
 		Registries.add(new Identifier("potionEffectTypes"), PotionEffectType.class, new IdRegistrationManager(PotionEffectType.REGISTRY, 255));
 		Registries.add(new Identifier("enchantments"), Enchantment.class, new IdRegistrationManager(Enchantment.REGISTRY, 255));
@@ -44,7 +50,13 @@ public class RegistryMod {
 
 		Fabric.getLoadingBus().subscribe(this);
 		// v Uncomment when testing
-		// Fabric.getLoadingBus().subscribe(new RegistryTestMod());
+		Fabric.getLoadingBus().subscribe(new RegistryTestMod());
+	}
+
+	// TODO: Hook me
+	private void initClient() {
+		blockRM.registerRemapListener((IRemapListener) Minecraft.getInstance().getBlockColorMap());
+		itemRM.registerRemapListener((IRemapListener) Minecraft.getInstance().itemColorMap);
 	}
 
 	@Hook(name = "fabric-registry:initRegistries", before = {}, after = "fabric:modsInitialized")

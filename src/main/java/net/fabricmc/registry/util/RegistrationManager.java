@@ -24,12 +24,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class RegistrationManager<V> {
+public abstract class RegistrationManager<V> implements IRemapListener {
+    private final Set<IRemapListener> remapListeners = new HashSet<>();
     private boolean frozen;
+
+    public RegistrationManager() {
+        registerRemapListener(this);
+    }
 
     public final void freeze() {
         frozen = true;
         onFreeze();
+    }
+
+    public final void registerRemapListener(IRemapListener listener) {
+        remapListeners.add(listener);
     }
 
     protected abstract int findNextFreeId(V value);
@@ -39,11 +48,13 @@ public abstract class RegistrationManager<V> {
 
     }
 
-    protected void onPreRemap() {
+    @Override
+    public void onBeforeRemap() {
 
     }
 
-    protected void onPostRemap() {
+    @Override
+    public void onAfterRemap() {
 
     }
 
@@ -101,7 +112,9 @@ public abstract class RegistrationManager<V> {
             }
         }
 
-        onPreRemap();
+        for (IRemapListener listener : remapListeners) {
+            listener.onBeforeRemap();
+        }
 
         for (Map.Entry<Integer, Identifier> entry : idMap.entrySet()) {
             V value = valueMap.get(entry.getValue());
@@ -112,7 +125,9 @@ public abstract class RegistrationManager<V> {
             register(id, valueMap.get(id));
         }
 
-        onPostRemap();
+        for (IRemapListener listener : remapListeners) {
+            listener.onAfterRemap();
+        }
     }
 
     public Map<Integer, Identifier> getIdMap() {

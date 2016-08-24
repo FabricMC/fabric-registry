@@ -27,16 +27,16 @@ public class ItemRegistrationManager extends IdRegistrationManager<Item> {
     }
 
     @Override
-    public void onPreRemap() {
-        super.onPreRemap();
+    public void onBeforeRemap() {
+        super.onBeforeRemap();
         Item.BLOCK_ITEM_MAP.clear();
     }
 
     @Override
     public boolean registerInternal(int rawId, Identifier id, Item value) {
         if (super.registerInternal(rawId, id, value)) {
-            if (Block.registry.containsKey(id)) {
-                Item.BLOCK_ITEM_MAP.put(Block.registry.get(id), value);
+            if (Block.REGISTRY.containsKey(id)) {
+                Item.BLOCK_ITEM_MAP.put(Block.REGISTRY.get(id), value);
             }
             return true;
         } else {

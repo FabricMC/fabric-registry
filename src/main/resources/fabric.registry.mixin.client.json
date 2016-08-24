@@ -1,8 +1,10 @@
 {
   "required": true,
-  "package": "net.fabricmc.registry.mixin.common",
+  "package": "net.fabricmc.registry.mixin.client",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinBlockColorMap",
+    "MixinItemColorMap"
   ],
   "injectors": {
     "defaultRequire": 1

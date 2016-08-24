@@ -26,18 +26,18 @@ import java.util.Iterator;
 
 public class BlockRegistrationManager extends IdRegistrationManager<Block> {
     public BlockRegistrationManager() {
-        super(Block.registry, 4095);
+        super(Block.REGISTRY, 4095);
     }
 
     private void addStateManual(Block block, int i) {
         int pos = registry.getId(block) << 4 | i;
-        Block.blockstateList.add(block.deserializeState(i), pos);
+        Block.BLOCKSTATE_ID_LIST.add(block.deserializeState(i), pos);
     }
 
     private void addStates(Block block) {
         for (IBlockState state : block.getStateFactory().getValidStates()) {
             int pos = registry.getId(block) << 4 | block.serializeState(state);
-            Block.blockstateList.add(state, pos);
+            Block.BLOCKSTATE_ID_LIST.add(state, pos);
         }
     }
 
@@ -52,10 +52,10 @@ public class BlockRegistrationManager extends IdRegistrationManager<Block> {
     }
 
     @Override
-    public void onPreRemap() {
-        super.onPreRemap();
-        Block.blockstateList.idMap.clear();
-        Block.blockstateList.list.clear();
+    public void onBeforeRemap() {
+        super.onBeforeRemap();
+        Block.BLOCKSTATE_ID_LIST.idMap.clear();
+        Block.BLOCKSTATE_ID_LIST.list.clear();
     }
 
     @Override

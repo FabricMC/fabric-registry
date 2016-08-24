@@ -49,8 +49,8 @@ public class IdRegistrationManager<V> extends RegistrationManager<V> {
     }
 
     @Override
-    protected void onPreRemap() {
-        super.onPreRemap();
+    public void onBeforeRemap() {
+        super.onBeforeRemap();
         registry.idStore.reset();
         registry.map.clear();
         registry.valueKeyMap.clear();

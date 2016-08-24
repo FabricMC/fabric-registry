@@ -26,8 +26,8 @@ public class EntityRegistrationManager extends IdRegistrationManager<Class<? ext
     }
 
     @Override
-    protected void onPreRemap() {
-        super.onPreRemap();
+    public void onBeforeRemap() {
+        super.onBeforeRemap();
         EntityRegistry.ID_LIST.clear();
     }
 
