@@ -66,7 +66,7 @@ public class MixinWorldSaveHandler {
         return new File(worldDataDir, "fabricRegistry" + ".dat" + (i == 0 ? "" : ("." + i)));
     }
 
-    // TODO: stop double save
+    // TODO: stop double save on client?
     @Inject(method="readWorldProperties", at=@At("HEAD"))
     public void readWorldProperties(CallbackInfoReturnable<WorldProperties> callbackInfo) {
         // Load

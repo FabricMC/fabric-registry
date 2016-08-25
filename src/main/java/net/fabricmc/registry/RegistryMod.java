@@ -19,24 +19,34 @@ package net.fabricmc.registry;
 import net.fabricmc.api.Hook;
 import net.fabricmc.base.Fabric;
 import net.fabricmc.base.loader.Init;
+import net.fabricmc.network.AbstractPacket;
+import net.fabricmc.network.NetworkManager;
+import net.fabricmc.network.impl.IndexedChannel;
 import net.fabricmc.registry.manager.BiomeRegistrationManager;
 import net.fabricmc.registry.manager.BlockRegistrationManager;
 import net.fabricmc.registry.manager.EntityRegistrationManager;
 import net.fabricmc.registry.manager.IdRegistrationManager;
 import net.fabricmc.registry.manager.ItemRegistrationManager;
+import net.fabricmc.registry.util.RegistrySyncPacket;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.potion.PotionEffectType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import net.minecraft.world.biome.Biome;
 
 public class RegistryMod {
+	public static IndexedChannel channel;
 	public static BlockRegistrationManager blockRM;
 	public static ItemRegistrationManager itemRM;
 
 	@Init
 	public void init() {
+		channel = new IndexedChannel();
+		channel.register(RegistrySyncPacket.class);
+		NetworkManager.registerChannel("registry", channel);
+
 		Registries.add(new Identifier("blocks"), Block.class, blockRM = new BlockRegistrationManager());
 		Registries.add(new Identifier("items"), Item.class, itemRM = new ItemRegistrationManager());
 		Registries.add(new Identifier("entities"), Class.class, new EntityRegistrationManager());
@@ -46,7 +56,7 @@ public class RegistryMod {
 
 		Fabric.getLoadingBus().subscribe(this);
 		// v Uncomment when testing
-		// Fabric.getLoadingBus().subscribe(new RegistryTestMod());
+		Fabric.getLoadingBus().subscribe(new RegistryTestMod());
 	}
 
 	@Hook(name = "fabric-registry:initRegistries", before = {}, after = "fabric:modsInitialized")

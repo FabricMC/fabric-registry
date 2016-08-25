@@ -1,10 +1,13 @@
 {
 	"id": "fabric-registry",
 	"group": "net.fabricmc.registry",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"modClass": "net.fabricmc.registry.RegistryMod",
 	"mixins": {
 		"client": "fabric.registry.mixin.client.json",
 		"common": "fabric.registry.mixin.common.json"
+	},
+	"dependencies": {
+		"net.fabricmc.fabric-network": {"version": "^0.1.3"}
 	}
 }
