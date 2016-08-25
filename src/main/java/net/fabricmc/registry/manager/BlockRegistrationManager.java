@@ -26,25 +26,16 @@ public class BlockRegistrationManager extends IdRegistrationManager<Block> {
         super(Block.REGISTRY, 4095);
     }
 
-    private void addStateManual(Block block, int i) {
-        int pos = registry.getId(block) << 4 | i;
-        Block.BLOCKSTATE_ID_LIST.add(block.deserializeState(i), pos);
-    }
-
-    private void addStates(Block block) {
-        for (IBlockState state : block.getStateFactory().getValidStates()) {
-            int pos = registry.getId(block) << 4 | block.serializeState(state);
-            Block.BLOCKSTATE_ID_LIST.add(state, pos);
-        }
-    }
-
     private void buildState(Block block) {
-        if (block instanceof BlockTripWire) {
-            for (int i = 0; i < 15; i++) {
-                addStateManual(block, i);
+        int validMetas = 0;
+        for (IBlockState state : block.getStateFactory().getValidStates()) {
+            validMetas |= 1 << block.serializeState(state);
+        }
+
+        for (int i = 0; i < 16; i++) {
+            if ((validMetas & (1 << i)) != 0) {
+                Block.BLOCKSTATE_ID_LIST.add(block.deserializeState(i), registry.getId(block) << 4 | i);
             }
-        } else {
-            addStates(block);
         }
     }
 

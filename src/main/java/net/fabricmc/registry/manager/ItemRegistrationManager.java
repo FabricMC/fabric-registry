@@ -29,6 +29,7 @@ public class ItemRegistrationManager extends IdRegistrationManager<Item> {
     @Override
     public void onBeforeRemap() {
         super.onBeforeRemap();
+        nextFreeId = 256;
         Item.BLOCK_ITEM_MAP.clear();
     }
 

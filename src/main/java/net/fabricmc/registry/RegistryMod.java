@@ -56,7 +56,7 @@ public class RegistryMod {
 
 		Fabric.getLoadingBus().subscribe(this);
 		// v Uncomment when testing
-		Fabric.getLoadingBus().subscribe(new RegistryTestMod());
+		//Fabric.getLoadingBus().subscribe(new RegistryTestMod());
 	}
 
 	@Hook(name = "fabric-registry:initRegistries", before = {}, after = "fabric:modsInitialized")

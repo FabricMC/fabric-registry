@@ -69,6 +69,8 @@ public class IdRegistrationManager<V> extends RegistrationManager<V> {
         registry.map.clear();
         registry.valueKeyMap.clear();
         registry.valueCache = null;
+
+        nextFreeId = 1;
     }
 
     @Override
