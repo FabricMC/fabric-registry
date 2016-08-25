@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import java.util.HashMap;
 import java.util.Map;
 
-@Mixin(value = ItemModelMap.class)
+@Mixin(value = ItemModelMap.class, remap = false)
 public class MixinItemModelMap implements IRemapListener {
     @Shadow
     public Map<Integer, ModelIdentifier> modelIds;

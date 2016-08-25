@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.HashMap;
 import java.util.Map;
 
-@Mixin(value = Minecraft.class)
+@Mixin(value = Minecraft.class, remap = false)
 public class MixinMinecraft {
     @Inject(method="init()V", at=@At("RETURN"))
     public void init(CallbackInfo callbackInfo) throws LWJGLException {

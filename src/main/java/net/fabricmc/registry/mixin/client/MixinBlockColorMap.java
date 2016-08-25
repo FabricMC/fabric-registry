@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import java.util.HashMap;
 import java.util.Map;
 
-@Mixin(value = BlockColorMap.class)
+@Mixin(value = BlockColorMap.class, remap = false)
 public class MixinBlockColorMap implements IRemapListener {
     @Shadow
     public IdList<IBlockColorMapper> mappers;

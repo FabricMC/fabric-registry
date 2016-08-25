@@ -17,7 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-@Mixin(value = WorldSaveHandler.class)
+@Mixin(value = WorldSaveHandler.class, remap = false)
 public class MixinWorldSaveHandler {
     private static final int ID_REGISTRY_BACKUPS = 3;
     private TagCompound lastSavedIdMap = null;

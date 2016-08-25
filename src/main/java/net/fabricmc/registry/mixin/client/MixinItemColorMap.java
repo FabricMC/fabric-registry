@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.Map;
 
-@Mixin(value = ItemColorMap.class)
+@Mixin(value = ItemColorMap.class, remap = false)
 public class MixinItemColorMap implements IRemapListener {
     @Shadow
     public IdList<IItemColorMapper> mappers;
