@@ -19,8 +19,8 @@ import java.util.Map;
 
 @Mixin(value = Minecraft.class)
 public class MixinMinecraft {
-    @Inject(method="an()V", at=@At("RETURN"))
-    public void an(CallbackInfo callbackInfo) throws LWJGLException {
+    @Inject(method="init()V", at=@At("RETURN"))
+    public void init(CallbackInfo callbackInfo) throws LWJGLException {
         RegistryMod.blockRM.registerRemapListener((IRemapListener) Minecraft.getInstance().getBlockColorMap());
         RegistryMod.itemRM.registerRemapListener((IRemapListener) Minecraft.getInstance().itemColorMap);
         RegistryMod.itemRM.registerRemapListener((IRemapListener) Minecraft.getInstance().getItemRenderer().a()); 

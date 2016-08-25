@@ -18,31 +18,32 @@ package net.fabricmc.registry;
 
 import net.fabricmc.api.Hook;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.block.ItemBlock;
 import net.minecraft.util.Identifier;
 
 public class RegistryTestMod {
-    public static final Identifier TESTBLOCK_ID = new Identifier("fabricregistrytest", "testblock");
+    public static final Identifier TESTBLOCK_1_ID = new Identifier("fabricregistrytest", "testblock1");
+    public static final Identifier TESTBLOCK_2_ID = new Identifier("fabricregistrytest", "testblock2");
     private Block testBlock;
-
-    @Hook(name = "fabric-registry-test:modsInitialized", before = {}, after = {"fabric:modsInitialized"})
-    public void onPostInit() {
-        // check if anything breaks
-        try {
-            System.out.println("Testing ID remap - same IDs");
-            Registries.applySerializedIdMap(Registries.serializeIdMap());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    private Block testBlockTwo;
 
     @Hook(name = "fabric-registry-test:registerBlocks", before = {}, after = {"fabric:registerBlocks"})
     public void onBlockRegistration() {
-        Registries.register(TESTBLOCK_ID, testBlock = new BlockTest());
+        Registries.register(TESTBLOCK_2_ID, testBlockTwo = new BlockTest(2));
+        Registries.register(TESTBLOCK_1_ID, testBlock = new BlockTest(1));
+
+        System.out.println("Block IDs: " + Block.getRawIdFromBlock(testBlock) + ", " + Block.getRawIdFromBlock(testBlockTwo));
     }
 
     @Hook(name = "fabric-registry-test:registerItems", before = {}, after = {"fabric:registerItems"})
     public void onItemRegistration() {
-        Registries.register(TESTBLOCK_ID, new ItemBlock(testBlock));
+        Registries.register(TESTBLOCK_2_ID, new ItemBlock(testBlockTwo));
+        Registries.register(TESTBLOCK_1_ID, new ItemBlock(testBlock));
+
+        System.out.println("Item IDs: "
+                + Item.getRawIdByItem(Item.getItemFromBlock(testBlock)) + ", "
+                + Item.getRawIdByItem(Item.getItemFromBlock(testBlockTwo))
+        );
     }
 }

@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package net.fabricmc.registry.util;
+package net.fabricmc.registry.manager;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import net.fabricmc.registry.RegistryMod;
+import net.fabricmc.registry.util.RegistryModUtils;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.biome.Biome;
 
-public class ItemRegistrationManager extends IdRegistrationManager<Item> {
-    public ItemRegistrationManager() {
-        super(Item.REGISTRY, 32767);
-        nextFreeId = 256;
+public class BiomeRegistrationManager extends IdRegistrationManager<Biome> {
+    public BiomeRegistrationManager() {
+        super(Biome.REGISTRY, 255);
     }
 
     @Override
     public void onBeforeRemap() {
         super.onBeforeRemap();
-        Item.BLOCK_ITEM_MAP.clear();
+        Biome.BIOMES.clear();
+        RegistryModUtils.clear(Biome.j);
     }
 
     @Override
-    public boolean registerInternal(int rawId, Identifier id, Item value) {
-        if (super.registerInternal(rawId, id, value)) {
-            if (Block.REGISTRY.containsKey(id)) {
-                Item.BLOCK_ITEM_MAP.put(Block.REGISTRY.get(id), value);
-            }
+    protected boolean registerInternal(int rawId, Identifier id, Biome value) {
+        try {
+            Biome.register(rawId, id.toString(), value);
+            Biome.BIOMES.add(value);
             return true;
-        } else {
+        } catch (Exception e) {
             return false;
         }
     }

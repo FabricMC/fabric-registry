@@ -19,7 +19,7 @@ package net.fabricmc.registry;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.fabricmc.base.Fabric;
-import net.fabricmc.registry.util.RegistrationManager;
+import net.fabricmc.registry.manager.RegistrationManager;
 import net.fabricmc.registry.util.exception.RegistryMappingNotFoundException;
 import net.minecraft.nbt.TagCompound;
 import net.minecraft.nbt.TagList;

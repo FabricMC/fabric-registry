@@ -17,20 +17,16 @@
 package net.fabricmc.registry;
 
 import net.fabricmc.api.Hook;
-import net.fabricmc.api.Side;
 import net.fabricmc.base.Fabric;
 import net.fabricmc.base.loader.Init;
-import net.fabricmc.registry.util.BiomeRegistrationManager;
-import net.fabricmc.registry.util.BlockRegistrationManager;
-import net.fabricmc.registry.util.EntityRegistrationManager;
-import net.fabricmc.registry.util.IRemapListener;
-import net.fabricmc.registry.util.IdRegistrationManager;
-import net.fabricmc.registry.util.ItemRegistrationManager;
+import net.fabricmc.registry.manager.BiomeRegistrationManager;
+import net.fabricmc.registry.manager.BlockRegistrationManager;
+import net.fabricmc.registry.manager.EntityRegistrationManager;
+import net.fabricmc.registry.manager.IdRegistrationManager;
+import net.fabricmc.registry.manager.ItemRegistrationManager;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
-import net.minecraft.item.block.ItemBlock;
 import net.minecraft.potion.PotionEffectType;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;

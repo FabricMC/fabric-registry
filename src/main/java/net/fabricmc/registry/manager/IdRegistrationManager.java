@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.registry.util;
+package net.fabricmc.registry.manager;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.IdRegistry;
@@ -36,6 +36,20 @@ public class IdRegistrationManager<V> extends RegistrationManager<V> {
             nextFreeId++;
         }
         return nextFreeId <= maxId ? nextFreeId : -1;
+    }
+
+    @Override
+    protected boolean replaceInternal(Identifier source, Identifier target) {
+        V sourceValue = registry.get(source);
+        V targetValue = registry.get(target);
+        if (sourceValue == targetValue) {
+            return true;
+        }
+
+        /* registry.idStore.set(registry.get(target), registry.getId(sourceValue));
+        registry.put(source, targetValue);
+        return true; */
+        return false;
     }
 
     public final V getDefaultValue() {

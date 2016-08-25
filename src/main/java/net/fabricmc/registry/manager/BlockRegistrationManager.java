@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.registry.util;
+package net.fabricmc.registry.manager;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.IBlockState;
 import net.minecraft.block.impl.BlockTripWire;
-import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
-
-import java.util.Iterator;
 
 public class BlockRegistrationManager extends IdRegistrationManager<Block> {
     public BlockRegistrationManager() {

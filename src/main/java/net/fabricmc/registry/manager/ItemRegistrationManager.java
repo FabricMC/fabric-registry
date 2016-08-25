@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-package net.fabricmc.registry.util;
+package net.fabricmc.registry.manager;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
-public class EntityRegistrationManager extends IdRegistrationManager<Class<? extends Entity>> {
-    public EntityRegistrationManager() {
-        super(EntityRegistry.CLASS_MAP, 255);
+public class ItemRegistrationManager extends IdRegistrationManager<Item> {
+    public ItemRegistrationManager() {
+        super(Item.REGISTRY, 32767);
+        nextFreeId = 256;
     }
 
     @Override
     public void onBeforeRemap() {
         super.onBeforeRemap();
-        EntityRegistry.ID_LIST.clear();
+        Item.BLOCK_ITEM_MAP.clear();
     }
 
     @Override
-    protected boolean registerInternal(int rawId, Identifier id, Class<? extends Entity> value) {
-        try {
-            EntityRegistry.registerEntity(rawId, id.toString(), value, null);
+    public boolean registerInternal(int rawId, Identifier id, Item value) {
+        if (super.registerInternal(rawId, id, value)) {
+            if (Block.REGISTRY.containsKey(id)) {
+                Item.BLOCK_ITEM_MAP.put(Block.REGISTRY.get(id), value);
+            }
             return true;
-        } catch (Exception e) {
+        } else {
             return false;
         }
     }

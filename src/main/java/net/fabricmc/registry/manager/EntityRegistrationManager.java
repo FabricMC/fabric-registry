@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 
-package net.fabricmc.registry.util;
+package net.fabricmc.registry.manager;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityRegistry;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
 
-public class BiomeRegistrationManager extends IdRegistrationManager<Biome> {
-    public BiomeRegistrationManager() {
-        super(Biome.REGISTRY, 255);
+public class EntityRegistrationManager extends IdRegistrationManager<Class<? extends Entity>> {
+    public EntityRegistrationManager() {
+        super(EntityRegistry.CLASS_MAP, 255);
     }
 
     @Override
     public void onBeforeRemap() {
         super.onBeforeRemap();
-        Biome.BIOMES.clear();
-        Biome.j.idMap.clear();
-        Biome.j.list.clear();
+        EntityRegistry.ID_LIST.clear();
     }
 
     @Override
-    protected boolean registerInternal(int rawId, Identifier id, Biome value) {
+    protected boolean registerInternal(int rawId, Identifier id, Class<? extends Entity> value) {
         try {
-            Biome.register(rawId, id.toString(), value);
-            Biome.BIOMES.add(value);
+            EntityRegistry.registerEntity(rawId, id.toString(), value, null);
             return true;
         } catch (Exception e) {
             return false;

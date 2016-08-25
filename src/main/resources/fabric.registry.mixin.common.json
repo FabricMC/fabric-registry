@@ -3,6 +3,7 @@
   "package": "net.fabricmc.registry.mixin.common",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinWorldSaveHandler"
   ],
   "injectors": {
     "defaultRequire": 1

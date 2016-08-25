@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.registry.util;
+package net.fabricmc.registry.manager;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.Maps;
+import net.fabricmc.registry.util.IRemapListener;
 import net.fabricmc.registry.util.exception.RegistryMappingNotFoundException;
 import net.minecraft.util.Identifier;
 
@@ -44,6 +45,7 @@ public abstract class RegistrationManager<V> implements IRemapListener {
     }
 
     protected abstract int findNextFreeId(V value);
+    protected abstract boolean replaceInternal(Identifier source, Identifier target);
     protected abstract boolean registerInternal(int rawId, Identifier id, V value);
 
     protected void onFreeze() {
@@ -66,6 +68,14 @@ public abstract class RegistrationManager<V> implements IRemapListener {
     public abstract Identifier getId(V value);
     public abstract int getRawId(V value);
     public abstract Iterable<V> getValues();
+
+    public boolean replace(Identifier source, Identifier target) {
+        if (!isFrozen() && contains(source) && contains(target)) {
+            return replaceInternal(source, target);
+        }
+
+        return false;
+    }
 
     public boolean register(Identifier id, V value) {
         if (!isFrozen()) {
@@ -122,6 +132,9 @@ public abstract class RegistrationManager<V> implements IRemapListener {
             listener.onBeforeRemap();
         }
 
+        boolean oldFrozen = frozen;
+        frozen = false;
+
         for (Map.Entry<Integer, Identifier> entry : idMap.entrySet()) {
             V value = valueMap.get(entry.getValue());
             registerInternal(entry.getKey(), entry.getValue(), value);
@@ -144,6 +157,8 @@ public abstract class RegistrationManager<V> implements IRemapListener {
         for (IRemapListener listener : remapListeners) {
             listener.onAfterRemap(idRemapTable);
         }
+
+        frozen = oldFrozen;
     }
 
     public Map<Integer, Identifier> getIdMap() {
