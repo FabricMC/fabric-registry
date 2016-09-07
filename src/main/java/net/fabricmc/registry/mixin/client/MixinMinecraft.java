@@ -39,6 +39,6 @@ public class MixinMinecraft {
     public void init(CallbackInfo callbackInfo) throws LWJGLException {
         RegistryMod.blockRM.registerRemapListener((IRemapListener) Minecraft.getInstance().getBlockColorMap());
         RegistryMod.itemRM.registerRemapListener((IRemapListener) Minecraft.getInstance().itemColorMap);
-        RegistryMod.itemRM.registerRemapListener((IRemapListener) Minecraft.getInstance().getItemRenderer().a()); 
+        RegistryMod.itemRM.registerRemapListener((IRemapListener) Minecraft.getInstance().getItemRenderer().getModelMap());
     }
 }

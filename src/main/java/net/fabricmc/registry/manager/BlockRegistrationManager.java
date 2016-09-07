@@ -17,8 +17,7 @@
 package net.fabricmc.registry.manager;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.IBlockState;
-import net.minecraft.block.impl.BlockTripWire;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.Identifier;
 
 public class BlockRegistrationManager extends IdRegistrationManager<Block> {
