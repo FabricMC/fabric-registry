@@ -26,7 +26,7 @@ import net.fabricmc.registry.manager.impl.BlockRegistrationManager;
 import net.fabricmc.registry.manager.impl.EntityRegistrationManager;
 import net.fabricmc.registry.manager.MojangIdRegistryManager;
 import net.fabricmc.registry.manager.impl.ItemRegistrationManager;
-import net.fabricmc.registry.util.EntityEntry;
+import net.fabricmc.registry.util.EntityRegistryEntry;
 import net.fabricmc.registry.util.RegistrySyncPacket;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
@@ -49,7 +49,7 @@ public class RegistryMod {
 
 		Registries.add(new Identifier("blocks"), Block.class, blockRM = new BlockRegistrationManager());
 		Registries.add(new Identifier("items"), Item.class, itemRM = new ItemRegistrationManager());
-		Registries.add(new Identifier("entities"), EntityEntry.class, entityRM = new EntityRegistrationManager());
+		Registries.add(new Identifier("entities"), EntityRegistryEntry.class, entityRM = new EntityRegistrationManager());
 		Registries.add(new Identifier("potionEffectTypes"), PotionEffectType.class, new MojangIdRegistryManager(PotionEffectType.REGISTRY, 255));
 		Registries.add(new Identifier("enchantments"), Enchantment.class, new MojangIdRegistryManager(Enchantment.REGISTRY, 255));
 		Registries.add(new Identifier("biomes"), Biome.class, new BiomeRegistrationManager());

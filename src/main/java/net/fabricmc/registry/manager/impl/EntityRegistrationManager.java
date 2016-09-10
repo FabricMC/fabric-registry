@@ -16,9 +16,8 @@
 
 package net.fabricmc.registry.manager.impl;
 
-import com.google.common.base.Objects;
 import net.fabricmc.registry.manager.RemappableRegistryManager;
-import net.fabricmc.registry.util.EntityEntry;
+import net.fabricmc.registry.util.EntityRegistryEntry;
 import net.fabricmc.registry.util.RegistryModUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityRegistry;
@@ -29,20 +28,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
-public class EntityRegistrationManager extends RemappableRegistryManager<EntityEntry> {
+public class EntityRegistrationManager extends RemappableRegistryManager<EntityRegistryEntry> {
     private static final int MAX_ID = 255;
 
     protected int nextFreeId = 1;
-    private final Map<Class<? extends Entity>, EntityEntry> classEntityEntryMap = new HashMap<>();
-    private final IdRegistry<Identifier, EntityEntry> registry = new IdRegistry<>();
+    private final Map<Class<? extends Entity>, EntityRegistryEntry> classEntityEntryMap = new HashMap<>();
+    private final IdRegistry<Identifier, EntityRegistryEntry> registry = new IdRegistry<>();
     private final IdRegistry<Identifier, Class<? extends Entity>> classRegistry = EntityRegistry.CLASS_MAP;
 
-    public EntityEntry getEntryForClass(Class<? extends Entity> entityClass) {
+    public EntityRegistryEntry getEntryForClass(Class<? extends Entity> entityClass) {
         return classEntityEntryMap.get(entityClass);
     }
 
     @Override
-    protected int findNextFreeId(EntityEntry value) {
+    protected int findNextFreeId(EntityRegistryEntry value) {
         while (nextFreeId <= MAX_ID && classRegistry.get(nextFreeId) != null) {
             nextFreeId++;
         }
@@ -68,7 +67,7 @@ public class EntityRegistrationManager extends RemappableRegistryManager<EntityE
     }
 
     @Override
-    protected boolean registerInternal(int rawId, Identifier id, EntityEntry value) {
+    protected boolean registerInternal(int rawId, Identifier id, EntityRegistryEntry value) {
         try {
             EntityRegistry.registerEntity(rawId, id.toString(), value.entityClass, null);
             if (!value.isDummy()) {
@@ -82,20 +81,20 @@ public class EntityRegistrationManager extends RemappableRegistryManager<EntityE
     }
 
     /* FIXME: ugly hacks for remapping taking vanilla entities
-       without EntityEntry into account */
+       without EntityRegistryEntry into account */
 
     @Override
-    public EntityEntry get(int id) {
+    public EntityRegistryEntry get(int id) {
         return get(classRegistry.getKey(classRegistry.get(id)));
     }
 
     @Override
-    public EntityEntry get(Identifier id) {
-        EntityEntry entry = registry.get(id);
+    public EntityRegistryEntry get(Identifier id) {
+        EntityRegistryEntry entry = registry.get(id);
         if (entry != null) {
             return entry;
         } else if (classRegistry.containsKey(id)) {
-            return EntityEntry.dummy(classRegistry.get(id));
+            return EntityRegistryEntry.dummy(classRegistry.get(id));
         } else {
             return null;
         }
@@ -107,17 +106,17 @@ public class EntityRegistrationManager extends RemappableRegistryManager<EntityE
     }
 
     @Override
-    public Identifier getId(EntityEntry value) {
+    public Identifier getId(EntityRegistryEntry value) {
         return classRegistry.getKey(value.entityClass);
     }
 
     @Override
-    public int getRawId(EntityEntry value) {
+    public int getRawId(EntityRegistryEntry value) {
         return classRegistry.getId(value.entityClass);
     }
 
     @Override
-    public Iterable<EntityEntry> values() {
+    public Iterable<EntityRegistryEntry> values() {
         return StreamSupport.stream(classRegistry.spliterator(), false)
                 .map((Class<? extends Entity> eClass) -> get(classRegistry.getKey(eClass)))
                 ::iterator;
