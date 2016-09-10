@@ -19,7 +19,9 @@ package net.fabricmc.registry;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.fabricmc.base.Fabric;
-import net.fabricmc.registry.manager.RegistrationManager;
+import net.fabricmc.registry.manager.IRegistryManager;
+import net.fabricmc.registry.manager.IRemappableRegistryManager;
+import net.fabricmc.registry.manager.RemappableRegistryManager;
 import net.fabricmc.registry.util.exception.RegistryMappingNotFoundException;
 import net.minecraft.nbt.TagCompound;
 import net.minecraft.nbt.TagList;
@@ -32,17 +34,17 @@ import java.util.List;
 import java.util.Map;
 
 public final class Registries {
-    private static final List<RegistrationManager> REGISTRY_LIST = new ArrayList<>();
-    private static final Map<Identifier, RegistrationManager> REGISTRIES = new HashMap<>();
-    private static final Map<RegistrationManager, String> REGISTRY_EVENT_NAMES = new HashMap<>();
-    private static final Map<Class<?>, RegistrationManager> REGISTRIES_BY_CLASS = new HashMap<>();
+    private static final List<IRegistryManager> REGISTRY_LIST = new ArrayList<>();
+    private static final Map<Identifier, IRegistryManager> REGISTRIES = new HashMap<>();
+    private static final Map<IRegistryManager, String> REGISTRY_EVENT_NAMES = new HashMap<>();
+    private static final Map<Class<?>, IRegistryManager> REGISTRIES_BY_CLASS = new HashMap<>();
 
     private Registries() {
 
     }
 
     public static void initRegistries() {
-        for (RegistrationManager manager : REGISTRY_LIST) {
+        for (IRegistryManager manager : REGISTRY_LIST) {
             if (!manager.isFrozen()) {
                 Fabric.getLoadingBus().call(REGISTRY_EVENT_NAMES.get(manager));
                 manager.freeze();
@@ -51,7 +53,7 @@ public final class Registries {
     }
 
     // TODO: Don't differentiate just based on class! :(
-    public static void add(Identifier id, Class c, RegistrationManager manager) {
+    public static void add(Identifier id, Class c, IRegistryManager manager) {
         String eventName = "register" + StringUtils.capitalize(id.getName());
         if (!"minecraft".equals(id.getOwner())) {
             eventName = id.getOwner() + ":" + eventName;
@@ -80,32 +82,41 @@ public final class Registries {
 
     public static TagCompound serializeIdMap() {
         TagCompound compound = new TagCompound();
-        for (Map.Entry<Identifier, RegistrationManager> entry : REGISTRIES.entrySet()) {
-            TagList entryData = new TagList();
-            Map<Integer, Identifier> idMap = entry.getValue().getIdMap();
-            for (Map.Entry<Integer, Identifier> idEntry : idMap.entrySet()) {
-                TagCompound data = new TagCompound();
-                data.setInt("id", idEntry.getKey());
-                data.setString("name", idEntry.getValue().toString());
-                entryData.add(data);
+        for (Map.Entry<Identifier, IRegistryManager> entry : REGISTRIES.entrySet()) {
+            if (entry.getValue() instanceof IRemappableRegistryManager) {
+                IRemappableRegistryManager rrm = (IRemappableRegistryManager) entry.getValue();
+                Map<Integer, Identifier> idMap = rrm.getRawIdMap();
+
+                TagList entryData = new TagList();
+                for (Map.Entry<Integer, Identifier> idEntry : idMap.entrySet()) {
+                    TagCompound data = new TagCompound();
+                    data.setInt("id", idEntry.getKey());
+                    data.setString("name", idEntry.getValue().toString());
+                    entryData.add(data);
+                }
+                compound.setTag(entry.getKey().toString(), entryData);
+                // System.out.println(entry.getKey() + " = " + entryData.toString());
             }
-            compound.setTag(entry.getKey().toString(), entryData);
         }
         return compound;
     }
 
     public static void applySerializedIdMap(TagCompound compound) throws RegistryMappingNotFoundException {
-        for (Map.Entry<Identifier, RegistrationManager> entry : REGISTRIES.entrySet()) {
-            if (compound.hasKey(entry.getKey().toString())) {
-                TagList list = compound.getTagList(entry.getKey().toString(), 10);
-                BiMap<Integer, Identifier> idMap = HashBiMap.create(list.getSize());
-                for (int i = 0; i < list.getSize(); i++) {
-                    TagCompound entryTag = list.getTagCompound(i);
-                    if (entryTag.hasKey("id") && entryTag.hasKey("name")) {
-                        idMap.put(entryTag.getInt("id"), new Identifier(entryTag.getString("name")));
+        for (Map.Entry<Identifier, IRegistryManager> entry : REGISTRIES.entrySet()) {
+            if (entry.getValue() instanceof IRemappableRegistryManager) {
+                IRemappableRegistryManager rrm = (IRemappableRegistryManager) entry.getValue();
+                if (compound.hasKey(entry.getKey().toString())) {
+                    TagList list = compound.getTagList(entry.getKey().toString(), 10);
+                    BiMap<Integer, Identifier> idMap = HashBiMap.create(list.getSize());
+                    for (int i = 0; i < list.getSize(); i++) {
+                        TagCompound entryTag = list.getTagCompound(i);
+                        if (entryTag.hasKey("id") && entryTag.hasKey("name")) {
+                            idMap.put(entryTag.getInt("id"), new Identifier(entryTag.getString("name")));
+                        }
                     }
+
+                    rrm.remap(idMap, false);
                 }
-                entry.getValue().remap(idMap, false);
             }
         }
     }

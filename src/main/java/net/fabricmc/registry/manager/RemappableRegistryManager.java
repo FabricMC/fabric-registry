@@ -27,11 +27,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class RegistrationManager<V> implements IRemapListener {
+public abstract class RemappableRegistryManager<V> implements IRemapListener, IRemappableRegistryManager<V> {
     private final Set<IRemapListener> remapListeners = new HashSet<>();
     private boolean frozen;
 
-    public RegistrationManager() {
+    public RemappableRegistryManager() {
         registerRemapListener(this);
     }
 
@@ -62,13 +62,7 @@ public abstract class RegistrationManager<V> implements IRemapListener {
 
     }
 
-    public abstract V get(int id);
-    public abstract V get(Identifier id);
-    public abstract boolean contains(Identifier id);
-    public abstract Identifier getId(V value);
-    public abstract int getRawId(V value);
-    public abstract Iterable<V> getValues();
-
+    // TODO
     public boolean replace(Identifier source, Identifier target) {
         if (!isFrozen() && contains(source) && contains(target)) {
             return replaceInternal(source, target);
@@ -77,6 +71,7 @@ public abstract class RegistrationManager<V> implements IRemapListener {
         return false;
     }
 
+    @Override
     public boolean register(Identifier id, V value) {
         if (!isFrozen()) {
             int rawId = findNextFreeId(value);
@@ -88,6 +83,7 @@ public abstract class RegistrationManager<V> implements IRemapListener {
         return false;
     }
 
+    @Override
     public final boolean isFrozen() {
         return frozen;
     }
@@ -104,6 +100,7 @@ public abstract class RegistrationManager<V> implements IRemapListener {
         return missingIdsLocal;
     }
 
+    @Override
     public void remap(BiMap<Integer, Identifier> idMap, boolean ignoreMissingEntries) throws RegistryMappingNotFoundException {
         Map<Identifier, V> valueMap = new HashMap<>();
         Map<Identifier, Integer> oldIds = new HashMap<>();
@@ -111,7 +108,7 @@ public abstract class RegistrationManager<V> implements IRemapListener {
         Map<Integer, Integer> idRemapTable = new HashMap<>();
         Set<Identifier> missingIdsMap = new HashSet<>();
 
-        for (V value : getValues()) {
+        for (V value : values()) {
             Identifier id = getId(value);
             oldIds.put(id, getRawId(value));
             valueMap.put(id, value);
@@ -161,9 +158,9 @@ public abstract class RegistrationManager<V> implements IRemapListener {
         frozen = oldFrozen;
     }
 
-    public Map<Integer, Identifier> getIdMap() {
+    public Map<Integer, Identifier> getRawIdMap() {
         Map<Integer, Identifier> idMap = new HashMap<>();
-        for (V value : getValues()) {
+        for (V value : values()) {
             idMap.put(getRawId(value), getId(value));
         }
         return idMap;

@@ -19,6 +19,7 @@ package net.fabricmc.registry.util;
 import net.minecraft.client.render.item.IItemColorMapper;
 import net.minecraft.client.render.item.ItemColorMap;
 import net.minecraft.util.IdList;
+import net.minecraft.util.registry.IdRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,13 @@ public final class RegistryModUtils {
         }
 
         target.putAll(remapTemp);
+    }
+
+    public static void clear(IdRegistry registry) {
+        registry.idStore.reset();
+        registry.map.clear();
+        registry.valueKeyMap.clear();
+        registry.valueCache = null;
     }
 
     public static void clear(IdList list) {

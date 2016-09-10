@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.registry.manager;
+package net.fabricmc.registry.manager.impl;
 
+import net.fabricmc.registry.manager.MojangIdRegistryManager;
+import net.fabricmc.registry.util.RegistryModUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.Identifier;
 
-public class BlockRegistrationManager extends IdRegistrationManager<Block> {
+public class BlockRegistrationManager extends MojangIdRegistryManager<Block> {
     public BlockRegistrationManager() {
         super(Block.REGISTRY, 4095);
     }
@@ -41,8 +43,7 @@ public class BlockRegistrationManager extends IdRegistrationManager<Block> {
     @Override
     public void onBeforeRemap() {
         super.onBeforeRemap();
-        Block.BLOCKSTATE_ID_LIST.idMap.clear();
-        Block.BLOCKSTATE_ID_LIST.list.clear();
+        RegistryModUtils.clear(Block.BLOCKSTATE_ID_LIST);
     }
 
     @Override

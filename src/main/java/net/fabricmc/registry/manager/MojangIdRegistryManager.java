@@ -16,15 +16,16 @@
 
 package net.fabricmc.registry.manager;
 
+import net.fabricmc.registry.util.RegistryModUtils;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.IdRegistry;
 
-public class IdRegistrationManager<V> extends RegistrationManager<V> {
+public class MojangIdRegistryManager<V> extends RemappableRegistryManager<V> {
     protected final IdRegistry<Identifier, V> registry;
     protected int nextFreeId = 1;
     private final int maxId;
 
-    public IdRegistrationManager(IdRegistry<Identifier, V> registry, int maxId) {
+    public MojangIdRegistryManager(IdRegistry<Identifier, V> registry, int maxId) {
         this.registry = registry;
         this.maxId = maxId;
     }
@@ -65,10 +66,7 @@ public class IdRegistrationManager<V> extends RegistrationManager<V> {
     @Override
     public void onBeforeRemap() {
         super.onBeforeRemap();
-        registry.idStore.reset();
-        registry.map.clear();
-        registry.valueKeyMap.clear();
-        registry.valueCache = null;
+        RegistryModUtils.clear(registry);
 
         nextFreeId = 1;
     }
@@ -99,7 +97,7 @@ public class IdRegistrationManager<V> extends RegistrationManager<V> {
     }
 
     @Override
-    public Iterable<V> getValues() {
+    public Iterable<V> values() {
         return registry;
     }
 }
