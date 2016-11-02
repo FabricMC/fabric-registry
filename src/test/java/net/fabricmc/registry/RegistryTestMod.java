@@ -16,11 +16,18 @@
 
 package net.fabricmc.registry;
 
-import net.fabricmc.api.Hook;
+import net.fabricmc.registry.manager.IRegistryManager;
 import net.minecraft.block.Block;
+import net.minecraft.command.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.block.ItemBlock;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class RegistryTestMod {
     public static final Identifier TESTBLOCK_1_ID = new Identifier("fabricregistrytest", "testblock1");
@@ -28,22 +35,29 @@ public class RegistryTestMod {
     private Block testBlock;
     private Block testBlockTwo;
 
-    @Hook(name = "fabric-registry-test:registerBlocks", before = {}, after = {"fabric:registerBlocks"})
-    public void onBlockRegistration() {
-        Registries.register(TESTBLOCK_2_ID, testBlockTwo = new BlockTest(2));
-        Registries.register(TESTBLOCK_1_ID, testBlock = new BlockTest(1));
+	public void init(){
+		RegistryMod.blockRM.getEvent().subscribe(new Consumer<IRegistryManager>() {
+			@Override
+			public void accept(IRegistryManager iRegistryManager) {
+				Registries.register(TESTBLOCK_2_ID, testBlockTwo = new BlockTest(2));
+				Registries.register(TESTBLOCK_1_ID, testBlock = new BlockTest(1));
 
-        System.out.println("Block IDs: " + Block.getRawIdFromBlock(testBlock) + ", " + Block.getRawIdFromBlock(testBlockTwo));
-    }
+				System.out.println("Block IDs: " + Block.getRawIdFromBlock(testBlock) + ", " + Block.getRawIdFromBlock(testBlockTwo));
+			}
+		});
 
-    @Hook(name = "fabric-registry-test:registerItems", before = {}, after = {"fabric:registerItems"})
-    public void onItemRegistration() {
-        Registries.register(TESTBLOCK_2_ID, new ItemBlock(testBlockTwo));
-        Registries.register(TESTBLOCK_1_ID, new ItemBlock(testBlock));
+		RegistryMod.itemRM.getEvent().subscribe(new Consumer<IRegistryManager>() {
+			@Override
+			public void accept(IRegistryManager iRegistryManager) {
+				Registries.register(TESTBLOCK_2_ID, new ItemBlock(testBlockTwo));
+				Registries.register(TESTBLOCK_1_ID, new ItemBlock(testBlock));
 
-        System.out.println("Item IDs: "
-                + Item.getRawIdByItem(Item.getItemFromBlock(testBlock)) + ", "
-                + Item.getRawIdByItem(Item.getItemFromBlock(testBlockTwo))
-        );
-    }
+				System.out.println("Item IDs: "
+					+ Item.getRawIdByItem(Item.getItemFromBlock(testBlock)) + ", "
+					+ Item.getRawIdByItem(Item.getItemFromBlock(testBlockTwo))
+				);
+			}
+		});
+
+	}
 }

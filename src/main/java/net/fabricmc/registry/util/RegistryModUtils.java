@@ -16,10 +16,14 @@
 
 package net.fabricmc.registry.util;
 
-import net.minecraft.client.render.item.IItemColorMapper;
-import net.minecraft.client.render.item.ItemColorMap;
+import net.fabricmc.registry.mixin.common.MixinIdList;
+import net.fabricmc.registry.mixin.common.MixinRegistry;
+import net.fabricmc.registry.mixin.interfaces.IMixinIdList;
+import net.fabricmc.registry.mixin.interfaces.IMixinIdRegistry;
+import net.fabricmc.registry.mixin.interfaces.IMixinRegistry;
 import net.minecraft.util.IdList;
 import net.minecraft.util.registry.IdRegistry;
+import net.minecraft.util.registry.Registry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +37,7 @@ public final class RegistryModUtils {
         Map<Integer, Object> remapTemp = new HashMap<>();
         for (Integer integer : idRemapTable.keySet()) {
             remapTemp.put(idRemapTable.get(integer), list.get(integer));
-            list.list.remove(integer);
+	        getIdListMixin(list).getList().remove(integer);
         }
 
         for (Integer integer : remapTemp.keySet()) {
@@ -52,14 +56,29 @@ public final class RegistryModUtils {
     }
 
     public static void clear(IdRegistry registry) {
-        registry.idStore.reset();
-        registry.map.clear();
-        registry.valueKeyMap.clear();
-        registry.valueCache = null;
+	    IMixinIdRegistry idRegistry = getIdRegistryMixin(registry);
+	    IMixinRegistry mixinRegistry = getRegistryMixin(registry);
+	    idRegistry.getIdStore().reset();
+	    mixinRegistry.getMap().clear();
+	    idRegistry.getValueKeyMap().clear();
+	    mixinRegistry.setValueCache(null);
     }
 
     public static void clear(IdList list) {
-        list.list.clear();
-        list.idMap.clear();
+	    getIdListMixin(list).getList().clear();
+	    getIdListMixin(list).getIdMap().clear();
     }
+
+    private static IMixinIdList getIdListMixin(IdList list){
+	    return (IMixinIdList)list;
+    }
+
+	private static IMixinIdRegistry getIdRegistryMixin(IdRegistry idRegistry){
+		return (IMixinIdRegistry)idRegistry;
+	}
+
+	private static IMixinRegistry getRegistryMixin(Registry registry){
+		return (IMixinRegistry)registry;
+	}
+
 }

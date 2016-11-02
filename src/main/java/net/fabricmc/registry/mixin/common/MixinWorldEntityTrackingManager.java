@@ -26,15 +26,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = WorldEntityTrackingManager.class, remap = false)
+@Mixin(value = WorldEntityTrackingManager.class)
 public class MixinWorldEntityTrackingManager {
     @Inject(method = "startTracking", at = @At("HEAD"), cancellable = true)
     public void startTracking(Entity entity, CallbackInfo info) {
-        EntityRegistryEntry entityEntry = RegistryMod.entityRM.getEntryForClass(entity.getClass());
-        if (entityEntry != null) {
-            startTracking(entity, entityEntry.trackingRange, entityEntry.updateRateTicks, entityEntry.sendVelocityUpdates);
-            info.cancel();
-        }
+//        EntityRegistryEntry entityEntry = RegistryMod.entityRM.getEntryForClass(entity.getClass());
+//        if (entityEntry != null) {
+//            startTracking(entity, entityEntry.trackingRange, entityEntry.updateRateTicks, entityEntry.sendVelocityUpdates);
+//            info.cancel();
+//        }
     }
 
     @Shadow

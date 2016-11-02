@@ -21,6 +21,11 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
+
 public class ItemRegistrationManager extends MojangIdRegistryManager<Item> {
     public ItemRegistrationManager() {
         super(Item.REGISTRY, 32767);
@@ -31,18 +36,42 @@ public class ItemRegistrationManager extends MojangIdRegistryManager<Item> {
     public void onBeforeRemap() {
         super.onBeforeRemap();
         nextFreeId = 256;
-        Item.BLOCK_ITEM_MAP.clear();
+	    getBlockItemMap().clear();
     }
 
     @Override
     public boolean registerInternal(int rawId, Identifier id, Item value) {
         if (super.registerInternal(rawId, id, value)) {
             if (Block.REGISTRY.containsKey(id)) {
-                Item.BLOCK_ITEM_MAP.put(Block.REGISTRY.get(id), value);
+	            addToBlockItemMap(Block.REGISTRY.get(id), value);
             }
             return true;
         } else {
             return false;
         }
     }
+
+    private Map<Block, Item> getBlockItemMap(){
+	    try {
+		    //TODO remap this
+		    Field field = Item.class.getDeclaredField("BLOCK_ITEM_MAP");
+		    field.setAccessible(true);
+		    return (Map<Block, Item>) field.get(null);
+	    } catch (NoSuchFieldException | IllegalAccessException e) {
+		    e.printStackTrace();
+	    }
+
+	    return null;
+    }
+
+    private void addToBlockItemMap(Block block, Item item){
+	    try {
+		    Method put = Map.class.getDeclaredMethod("put",Object.class,Object.class);
+		    put.invoke(getBlockItemMap(), block, item);
+	    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+		    e.printStackTrace();
+	    }
+
+    }
+
 }

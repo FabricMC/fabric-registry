@@ -16,6 +16,8 @@
 
 package net.fabricmc.registry.manager;
 
+import net.fabricmc.api.Event;
+import net.fabricmc.api.Stage;
 import net.minecraft.util.Identifier;
 
 public interface IRegistryManager<V> {
@@ -28,4 +30,8 @@ public interface IRegistryManager<V> {
 
     boolean isFrozen();
     void freeze();
+
+	void setEvent(Event.Event1<IRegistryManager> event);
+	Event.Event1<IRegistryManager> getEvent();
+
 }

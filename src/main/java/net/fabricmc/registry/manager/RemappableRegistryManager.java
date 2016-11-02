@@ -17,7 +17,8 @@
 package net.fabricmc.registry.manager;
 
 import com.google.common.collect.BiMap;
-import com.google.common.collect.Maps;
+import net.fabricmc.api.Event;
+import net.fabricmc.api.Stage;
 import net.fabricmc.registry.util.IRemapListener;
 import net.fabricmc.registry.util.exception.RegistryMappingNotFoundException;
 import net.minecraft.util.Identifier;
@@ -30,6 +31,7 @@ import java.util.Set;
 public abstract class RemappableRegistryManager<V> implements IRemapListener, IRemappableRegistryManager<V> {
     private final Set<IRemapListener> remapListeners = new HashSet<>();
     private boolean frozen;
+	private Event.Event1<IRegistryManager> event;
 
     public RemappableRegistryManager() {
         registerRemapListener(this);
@@ -165,4 +167,14 @@ public abstract class RemappableRegistryManager<V> implements IRemapListener, IR
         }
         return idMap;
     }
+
+	@Override
+	public void setEvent(Event.Event1<IRegistryManager> event) {
+		this.event = event;
+	}
+
+	@Override
+	public Event.Event1<IRegistryManager> getEvent() {
+		return event;
+	}
 }

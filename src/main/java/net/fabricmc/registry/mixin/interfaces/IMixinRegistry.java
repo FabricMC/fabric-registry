@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.registry;
+package net.fabricmc.registry.mixin.interfaces;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.gui.CreativeTab;
-import net.minecraft.util.MapColor;
+import java.util.Map;
 
-public class BlockTest extends Block {
-    public BlockTest(int id) {
-        super(Material.METAL, MapColor.IRON);
-        setTranslationKey("fabricregistrytest.testblock." + id);
-        setCreativeTab(CreativeTab.MISC);
-    }
+public interface IMixinRegistry {
+
+	public Map getMap();
+
+	public Object[] getValueCache();
+
+	public void setValueCache(Object[] valueCache);
 }

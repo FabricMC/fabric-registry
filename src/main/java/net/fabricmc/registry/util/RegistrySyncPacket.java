@@ -20,10 +20,7 @@ import net.fabricmc.base.Fabric;
 import net.fabricmc.network.AbstractPacket;
 import net.fabricmc.network.Asynchronous;
 import net.fabricmc.registry.Registries;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.TagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.impl.TextComponentString;
 import net.minecraft.util.PacketByteBuf;
 
 @Asynchronous

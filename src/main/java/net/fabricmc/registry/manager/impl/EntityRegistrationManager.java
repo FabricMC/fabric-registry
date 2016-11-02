@@ -24,6 +24,7 @@ import net.minecraft.entity.EntityRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.IdRegistry;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
@@ -69,7 +70,10 @@ public class EntityRegistrationManager extends RemappableRegistryManager<EntityR
     @Override
     protected boolean registerInternal(int rawId, Identifier id, EntityRegistryEntry value) {
         try {
-            EntityRegistry.registerEntity(rawId, id.toString(), value.entityClass, null);
+            //TODO remap
+	        Method registerEntityMethord = EntityRegistry.class.getDeclaredMethod("registerEntity", Integer.class, String.class, Class.class, String.class);
+	        registerEntityMethord.setAccessible(true);
+	        registerEntityMethord.invoke(null, rawId, id.toString(), value.entityClass, null);
             if (!value.isDummy()) {
                 registry.register(rawId, id, value);
                 classEntityEntryMap.put(value.entityClass, value);

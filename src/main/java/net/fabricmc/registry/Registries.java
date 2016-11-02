@@ -18,10 +18,10 @@ package net.fabricmc.registry;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.fabricmc.base.Fabric;
+import net.fabricmc.api.Event;
+import net.fabricmc.api.Stage;
 import net.fabricmc.registry.manager.IRegistryManager;
 import net.fabricmc.registry.manager.IRemappableRegistryManager;
-import net.fabricmc.registry.manager.RemappableRegistryManager;
 import net.fabricmc.registry.util.exception.RegistryMappingNotFoundException;
 import net.minecraft.nbt.TagCompound;
 import net.minecraft.nbt.TagList;
@@ -46,7 +46,7 @@ public final class Registries {
     public static void initRegistries() {
         for (IRegistryManager manager : REGISTRY_LIST) {
             if (!manager.isFrozen()) {
-                Fabric.getLoadingBus().call(REGISTRY_EVENT_NAMES.get(manager));
+	            manager.getEvent().post(manager);
                 manager.freeze();
             }
         }
@@ -55,17 +55,16 @@ public final class Registries {
     // TODO: Don't differentiate just based on class! :(
     public static void add(Identifier id, Class c, IRegistryManager manager) {
         String eventName = "register" + StringUtils.capitalize(id.getName());
-        if (!"minecraft".equals(id.getOwner())) {
-            eventName = id.getOwner() + ":" + eventName;
+        if (!"minecraft".equals(id.getNamespace())) {
+            eventName = id.getNamespace() + ":" + eventName;
         } else {
             eventName = "fabric:" + eventName;
         }
-
+		manager.setEvent(new Event.Event1<>());
         REGISTRY_LIST.add(manager);
         REGISTRIES.put(id, manager);
         REGISTRY_EVENT_NAMES.put(manager, eventName);
         REGISTRIES_BY_CLASS.put(c, manager);
-        Fabric.getLoadingBus().addDummyHookName(eventName);
     }
 
     public static boolean register(Identifier id, Object o) {

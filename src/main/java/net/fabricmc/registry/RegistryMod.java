@@ -16,15 +16,14 @@
 
 package net.fabricmc.registry;
 
-import net.fabricmc.api.Hook;
-import net.fabricmc.base.Fabric;
 import net.fabricmc.base.loader.Init;
+import net.fabricmc.base.loader.Loader;
 import net.fabricmc.network.NetworkManager;
 import net.fabricmc.network.impl.IndexedChannel;
 import net.fabricmc.registry.manager.impl.BiomeRegistrationManager;
 import net.fabricmc.registry.manager.impl.BlockRegistrationManager;
-import net.fabricmc.registry.manager.impl.EntityRegistrationManager;
 import net.fabricmc.registry.manager.MojangIdRegistryManager;
+import net.fabricmc.registry.manager.impl.EntityRegistrationManager;
 import net.fabricmc.registry.manager.impl.ItemRegistrationManager;
 import net.fabricmc.registry.util.EntityRegistryEntry;
 import net.fabricmc.registry.util.RegistrySyncPacket;
@@ -38,7 +37,7 @@ import net.minecraft.world.biome.Biome;
 public class RegistryMod {
 	public static IndexedChannel channel;
 	public static BlockRegistrationManager blockRM;
-	public static EntityRegistrationManager entityRM;
+	//public static EntityRegistrationManager entityRM;
 	public static ItemRegistrationManager itemRM;
 
 	@Init
@@ -49,18 +48,17 @@ public class RegistryMod {
 
 		Registries.add(new Identifier("blocks"), Block.class, blockRM = new BlockRegistrationManager());
 		Registries.add(new Identifier("items"), Item.class, itemRM = new ItemRegistrationManager());
-		Registries.add(new Identifier("entities"), EntityRegistryEntry.class, entityRM = new EntityRegistrationManager());
+		//Currenly breaking all entitys needs fixing asap
+		//Registries.add(new Identifier("entities"), EntityRegistryEntry.class, entityRM = new EntityRegistrationManager());
 		Registries.add(new Identifier("potionEffectTypes"), PotionEffectType.class, new MojangIdRegistryManager(PotionEffectType.REGISTRY, 255));
 		Registries.add(new Identifier("enchantments"), Enchantment.class, new MojangIdRegistryManager(Enchantment.REGISTRY, 255));
 		Registries.add(new Identifier("biomes"), Biome.class, new BiomeRegistrationManager());
 
-		Fabric.getLoadingBus().subscribe(this);
-		// v Uncomment when testing
-		//Fabric.getLoadingBus().subscribe(new RegistryTestMod());
+		// Uncomment when testing
+		//new RegistryTestMod().init();
+
+		Loader.INSTANCE.modsInitialized.subscribe(() -> Registries.initRegistries());
+
 	}
 
-	@Hook(name = "fabric-registry:initRegistries", before = {}, after = "fabric:modsInitialized")
-	public void postInit() {
-		Registries.initRegistries();
-	}
 }

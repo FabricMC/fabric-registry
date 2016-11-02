@@ -19,9 +19,11 @@ package net.fabricmc.registry.mixin.common;
 import net.fabricmc.registry.Registries;
 import net.fabricmc.registry.util.exception.RegistryMappingNotFoundException;
 import net.minecraft.nbt.TagCompound;
-import net.minecraft.util.TagStorageHelper;
-import net.minecraft.world.WorldProperties;
-import net.minecraft.world.WorldSaveHandler;
+
+import net.minecraft.nbt.TagStorageHelper;
+import net.minecraft.world.WorldSaveHandlerAnvil;
+import net.minecraft.world.WorldSaveHandlerOld;
+import net.minecraft.world.level.LevelProperties;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,7 +35,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-@Mixin(value = WorldSaveHandler.class, remap = false)
+@Mixin(value = WorldSaveHandlerOld.class)
 public class MixinWorldSaveHandler {
     private static final int ID_REGISTRY_BACKUPS = 3;
     private TagCompound lastSavedIdMap = null;
@@ -67,8 +69,8 @@ public class MixinWorldSaveHandler {
     }
 
     // TODO: stop double save on client?
-    @Inject(method="readWorldProperties", at=@At("HEAD"))
-    public void readWorldProperties(CallbackInfoReturnable<WorldProperties> callbackInfo) {
+    @Inject(method="readProperties", at=@At("HEAD"))
+    public void readWorldProperties(CallbackInfoReturnable<LevelProperties> callbackInfo) {
         // Load
         for (int i = 0; i < ID_REGISTRY_BACKUPS; i++) {
             if (readWorldIdMap(getWorldIdMapFile(i))) {

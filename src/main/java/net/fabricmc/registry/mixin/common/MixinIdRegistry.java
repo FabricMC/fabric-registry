@@ -14,17 +14,30 @@
  * limitations under the License.
  */
 
-package net.fabricmc.registry;
+package net.fabricmc.registry.mixin.common;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.gui.CreativeTab;
-import net.minecraft.util.MapColor;
+import net.fabricmc.registry.mixin.interfaces.IMixinIdRegistry;
+import net.minecraft.util.registry.IdRegistry;
+import net.minecraft.util.registry.IdStore;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
-public class BlockTest extends Block {
-    public BlockTest(int id) {
-        super(Material.METAL, MapColor.IRON);
-        setTranslationKey("fabricregistrytest.testblock." + id);
-        setCreativeTab(CreativeTab.MISC);
-    }
+import java.util.Map;
+
+@Mixin(IdRegistry.class)
+public class MixinIdRegistry implements IMixinIdRegistry {
+	@Shadow
+	private IdStore idStore;
+	@Shadow
+	private Map valueKeyMap;
+
+	public IdStore getIdStore() {
+		return idStore;
+	}
+
+	public Map getValueKeyMap() {
+		return valueKeyMap;
+	}
+
+
 }

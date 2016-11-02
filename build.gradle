@@ -2,12 +2,20 @@ buildscript {
     repositories {
         jcenter()
         maven {
-        	name = "Fabric"
-        	url = "http://maven.fabricmc.net/"
+            name = 'Fabric'
+            url = 'http://maven.fabricmc.net/'
+        }
+        maven {
+            name = 'SpongePowered'
+            url = 'http://repo.spongepowered.org/maven'
+        }
+        maven {
+            name = 'mojang'
+            url = 'https://libraries.minecraft.net/'
         }
     }
     dependencies {
-        classpath "net.fabricmc:fabric-loom:0.0.1-SNAPSHOT"
+        classpath "net.fabricmc:fabric-loom:0.0.4-SNAPSHOT"
     }
 }
 
@@ -17,16 +25,22 @@ plugins {
 
 apply plugin: "net.fabricmc.loom"
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 archivesBaseName = modid
 
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/maven.gradle'
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/license.gradle'
+apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
 
 minecraft {
 	version = mc_version
 	fabricVersion = fabric_version
+    pomfVersion = pomf_version
+	refmapName = "fabric-registry-refmap.json"
 }
 
 dependencies {
-    compile "net.fabricmc:fabric-network:${network_version}"
+    compile "net.fabricmc:fabric-network:${network_version}:debof"
 }

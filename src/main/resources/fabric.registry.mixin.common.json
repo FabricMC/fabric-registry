@@ -5,7 +5,10 @@
   "mixins": [
     "MixinNetworkGameHandlerServer",
     "MixinWorldEntityTrackingManager",
-    "MixinWorldSaveHandler"
+    "MixinWorldSaveHandler",
+    "MixinIdList",
+    "MixinIdRegistry",
+    "MixinRegistry"
   ],
   "injectors": {
     "defaultRequire": 1
