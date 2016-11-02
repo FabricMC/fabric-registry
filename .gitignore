@@ -15,3 +15,5 @@
 !/README.md
 !/LICENSE
 !/HEADER
+!/Jenkinsfile
+!/settings.gradle
