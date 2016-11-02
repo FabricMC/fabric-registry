@@ -28,10 +28,9 @@ import java.util.List;
 public class MixinIdList implements IMixinIdList {
 
 	@Shadow
-	private List list;
-
-	@Shadow
 	IdentityHashMap idMap;
+	@Shadow
+	private List list;
 
 	public List getList() {
 		return list;

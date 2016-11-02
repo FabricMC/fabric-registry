@@ -39,5 +39,4 @@ public class MixinIdRegistry implements IMixinIdRegistry {
 		return valueKeyMap;
 	}
 
-
 }

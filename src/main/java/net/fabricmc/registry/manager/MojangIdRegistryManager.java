@@ -21,83 +21,83 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.IdRegistry;
 
 public class MojangIdRegistryManager<V> extends RemappableRegistryManager<V> {
-    protected final IdRegistry<Identifier, V> registry;
-    protected int nextFreeId = 1;
-    private final int maxId;
+	protected final IdRegistry<Identifier, V> registry;
+	private final int maxId;
+	protected int nextFreeId = 1;
 
-    public MojangIdRegistryManager(IdRegistry<Identifier, V> registry, int maxId) {
-        this.registry = registry;
-        this.maxId = maxId;
-    }
+	public MojangIdRegistryManager(IdRegistry<Identifier, V> registry, int maxId) {
+		this.registry = registry;
+		this.maxId = maxId;
+	}
 
-    @Override
-    protected int findNextFreeId(V value) {
-        V defValue = getDefaultValue();
-        while (nextFreeId <= maxId && registry.get(nextFreeId) != null && registry.get(nextFreeId) != defValue) {
-            nextFreeId++;
-        }
-        return nextFreeId <= maxId ? nextFreeId : -1;
-    }
+	@Override
+	protected int findNextFreeId(V value) {
+		V defValue = getDefaultValue();
+		while (nextFreeId <= maxId && registry.get(nextFreeId) != null && registry.get(nextFreeId) != defValue) {
+			nextFreeId++;
+		}
+		return nextFreeId <= maxId ? nextFreeId : -1;
+	}
 
-    @Override
-    protected boolean replaceInternal(Identifier source, Identifier target) {
-        V sourceValue = registry.get(source);
-        V targetValue = registry.get(target);
-        if (sourceValue == targetValue) {
-            return true;
-        }
+	@Override
+	protected boolean replaceInternal(Identifier source, Identifier target) {
+		V sourceValue = registry.get(source);
+		V targetValue = registry.get(target);
+		if (sourceValue == targetValue) {
+			return true;
+		}
 
         /* registry.idStore.set(registry.get(target), registry.getId(sourceValue));
         registry.put(source, targetValue);
         return true; */
-        return false;
-    }
+		return false;
+	}
 
-    public final V getDefaultValue() {
-        return registry.get(0);
-    }
+	public final V getDefaultValue() {
+		return registry.get(0);
+	}
 
-    @Override
-    protected boolean registerInternal(int rawId, Identifier id, V value) {
-        registry.register(rawId, id, value);
-        return true;
-    }
+	@Override
+	protected boolean registerInternal(int rawId, Identifier id, V value) {
+		registry.register(rawId, id, value);
+		return true;
+	}
 
-    @Override
-    public void onBeforeRemap() {
-        super.onBeforeRemap();
-        RegistryModUtils.clear(registry);
+	@Override
+	public void onBeforeRemap() {
+		super.onBeforeRemap();
+		RegistryModUtils.clear(registry);
 
-        nextFreeId = 1;
-    }
+		nextFreeId = 1;
+	}
 
-    @Override
-    public V get(int id) {
-        return registry.get(id);
-    }
+	@Override
+	public V get(int id) {
+		return registry.get(id);
+	}
 
-    @Override
-    public V get(Identifier id) {
-        return registry.get(id);
-    }
+	@Override
+	public V get(Identifier id) {
+		return registry.get(id);
+	}
 
-    @Override
-    public boolean contains(Identifier id) {
-        return registry.containsKey(id);
-    }
+	@Override
+	public boolean contains(Identifier id) {
+		return registry.containsKey(id);
+	}
 
-    @Override
-    public Identifier getId(V value) {
-        return registry.getKey(value);
-    }
+	@Override
+	public Identifier getId(V value) {
+		return registry.getKey(value);
+	}
 
-    @Override
-    public int getRawId(V value) {
-        return registry.getId(value);
-    }
+	@Override
+	public int getRawId(V value) {
+		return registry.getId(value);
+	}
 
-    @Override
-    public Iterable<V> values() {
-        return registry;
-    }
+	@Override
+	public Iterable<V> values() {
+		return registry;
+	}
 }

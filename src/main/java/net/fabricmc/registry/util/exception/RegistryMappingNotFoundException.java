@@ -22,11 +22,11 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class RegistryMappingNotFoundException extends RegistryException {
-    public RegistryMappingNotFoundException(Identifier id) {
-        super(id.toString());
-    }
+	public RegistryMappingNotFoundException(Identifier id) {
+		super(id.toString());
+	}
 
-    public RegistryMappingNotFoundException(Collection<Identifier> ids) {
-        super(Arrays.toString(ids.toArray()));
-    }
+	public RegistryMappingNotFoundException(Collection<Identifier> ids) {
+		super(Arrays.toString(ids.toArray()));
+	}
 }

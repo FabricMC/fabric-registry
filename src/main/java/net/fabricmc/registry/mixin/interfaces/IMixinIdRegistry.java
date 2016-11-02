@@ -20,7 +20,6 @@ import net.minecraft.util.registry.IdStore;
 
 import java.util.Map;
 
-
 public interface IMixinIdRegistry {
 
 	public IdStore getIdStore();

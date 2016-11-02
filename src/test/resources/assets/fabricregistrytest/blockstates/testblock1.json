@@ -1,5 +1,7 @@
 {
   "variants": {
-    "normal": { "model": "fabricregistrytest:testblock" }
+    "normal": {
+      "model": "fabricregistrytest:testblock"
+    }
   }
 }

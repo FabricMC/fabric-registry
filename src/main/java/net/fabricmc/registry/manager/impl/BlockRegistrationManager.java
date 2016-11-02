@@ -23,36 +23,36 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.Identifier;
 
 public class BlockRegistrationManager extends MojangIdRegistryManager<Block> {
-    public BlockRegistrationManager() {
-        super(Block.REGISTRY, 4095);
-    }
+	public BlockRegistrationManager() {
+		super(Block.REGISTRY, 4095);
+	}
 
-    private void buildState(Block block) {
-        int validMetas = 0;
-        for (IBlockState state : block.getStateFactory().getValidStates()) {
-            validMetas |= 1 << block.serializeState(state);
-        }
+	private void buildState(Block block) {
+		int validMetas = 0;
+		for (IBlockState state : block.getStateFactory().getValidStates()) {
+			validMetas |= 1 << block.serializeState(state);
+		}
 
-        for (int i = 0; i < 16; i++) {
-            if ((validMetas & (1 << i)) != 0) {
-                Block.BLOCKSTATE_ID_LIST.add(block.deserializeState(i), registry.getId(block) << 4 | i);
-            }
-        }
-    }
+		for (int i = 0; i < 16; i++) {
+			if ((validMetas & (1 << i)) != 0) {
+				Block.BLOCKSTATE_ID_LIST.add(block.deserializeState(i), registry.getId(block) << 4 | i);
+			}
+		}
+	}
 
-    @Override
-    public void onBeforeRemap() {
-        super.onBeforeRemap();
-        RegistryModUtils.clear(Block.BLOCKSTATE_ID_LIST);
-    }
+	@Override
+	public void onBeforeRemap() {
+		super.onBeforeRemap();
+		RegistryModUtils.clear(Block.BLOCKSTATE_ID_LIST);
+	}
 
-    @Override
-    public boolean registerInternal(int rawId, Identifier id, Block value) {
-        if (super.registerInternal(rawId, id, value)) {
-            buildState(value);
-            return true;
-        } else {
-            return false;
-        }
-    }
+	@Override
+	public boolean registerInternal(int rawId, Identifier id, Block value) {
+		if (super.registerInternal(rawId, id, value)) {
+			buildState(value);
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

@@ -22,9 +22,9 @@ import net.minecraft.gui.CreativeTab;
 import net.minecraft.util.MapColor;
 
 public class BlockTest extends Block {
-    public BlockTest(int id) {
-        super(Material.METAL, MapColor.IRON);
-        setTranslationKey("fabricregistrytest.testblock." + id);
-        setCreativeTab(CreativeTab.MISC);
-    }
+	public BlockTest(int id) {
+		super(Material.METAL, MapColor.IRON);
+		setTranslationKey("fabricregistrytest.testblock." + id);
+		setCreativeTab(CreativeTab.MISC);
+	}
 }

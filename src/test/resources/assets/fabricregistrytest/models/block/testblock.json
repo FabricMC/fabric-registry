@@ -1,6 +1,6 @@
 {
-    "parent": "block/cube_all",
-    "textures": {
-        "all": "fabricregistrytest:blocks/bad_texture"
-    }
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "fabricregistrytest:blocks/bad_texture"
+  }
 }

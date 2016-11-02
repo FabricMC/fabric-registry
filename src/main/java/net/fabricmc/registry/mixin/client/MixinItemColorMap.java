@@ -28,15 +28,15 @@ import java.util.Map;
 
 @Mixin(value = ItemColorMap.class, remap = false)
 public class MixinItemColorMap implements IRemapListener {
-    @Shadow
-    public IdList<IItemColorMapper> mappers;
+	@Shadow
+	public IdList<IItemColorMapper> mappers;
 
-    @Override
-    public void onBeforeRemap() {
-    }
+	@Override
+	public void onBeforeRemap() {
+	}
 
-    @Override
-    public void onAfterRemap(Map<Integer, Integer> idRemapTable) {
-        RegistryModUtils.remapIdList(idRemapTable, mappers);
-    }
+	@Override
+	public void onAfterRemap(Map<Integer, Integer> idRemapTable) {
+		RegistryModUtils.remapIdList(idRemapTable, mappers);
+	}
 }

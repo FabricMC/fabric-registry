@@ -17,11 +17,11 @@
 package net.fabricmc.registry.util.exception;
 
 public class RegistryException extends Exception {
-    public RegistryException() {
-        super();
-    }
+	public RegistryException() {
+		super();
+	}
 
-    public RegistryException(String var1) {
-        super(var1);
-    }
+	public RegistryException(String var1) {
+		super(var1);
+	}
 }

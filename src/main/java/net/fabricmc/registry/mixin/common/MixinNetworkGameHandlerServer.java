@@ -16,7 +16,6 @@
 
 package net.fabricmc.registry.mixin.common;
 
-
 import net.fabricmc.registry.RegistryMod;
 import net.fabricmc.registry.util.RegistrySyncPacket;
 import net.minecraft.entity.player.EntityPlayerServer;
@@ -30,10 +29,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = NetworkGameHandlerServer.class)
 public class MixinNetworkGameHandlerServer {
-    @Inject(method = "<init>", at = @At("RETURN"))
-    public void init(MinecraftServer server, ClientConnection connection, EntityPlayerServer player, CallbackInfo info) {
-        if (server.isDedicated()) {
-           RegistryMod.channel.sendToPlayer(new RegistrySyncPacket().init(), player);
-        }
-    }
+	@Inject(method = "<init>", at = @At("RETURN"))
+	public void init(MinecraftServer server, ClientConnection connection, EntityPlayerServer player, CallbackInfo info) {
+		if (server.isDedicated()) {
+			RegistryMod.channel.sendToPlayer(new RegistrySyncPacket().init(), player);
+		}
+	}
 }

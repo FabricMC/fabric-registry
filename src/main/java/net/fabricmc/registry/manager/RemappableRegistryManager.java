@@ -18,7 +18,6 @@ package net.fabricmc.registry.manager;
 
 import com.google.common.collect.BiMap;
 import net.fabricmc.api.Event;
-import net.fabricmc.api.Stage;
 import net.fabricmc.registry.util.IRemapListener;
 import net.fabricmc.registry.util.exception.RegistryMappingNotFoundException;
 import net.minecraft.util.Identifier;
@@ -29,152 +28,154 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class RemappableRegistryManager<V> implements IRemapListener, IRemappableRegistryManager<V> {
-    private final Set<IRemapListener> remapListeners = new HashSet<>();
-    private boolean frozen;
+	private final Set<IRemapListener> remapListeners = new HashSet<>();
+	private boolean frozen;
 	private Event.Event1<IRegistryManager> event;
 
-    public RemappableRegistryManager() {
-        registerRemapListener(this);
-    }
+	public RemappableRegistryManager() {
+		registerRemapListener(this);
+	}
 
-    public final void freeze() {
-        frozen = true;
-        onFreeze();
-    }
+	public final void freeze() {
+		frozen = true;
+		onFreeze();
+	}
 
-    public final void registerRemapListener(IRemapListener listener) {
-        remapListeners.add(listener);
-    }
+	public final void registerRemapListener(IRemapListener listener) {
+		remapListeners.add(listener);
+	}
 
-    protected abstract int findNextFreeId(V value);
-    protected abstract boolean replaceInternal(Identifier source, Identifier target);
-    protected abstract boolean registerInternal(int rawId, Identifier id, V value);
+	protected abstract int findNextFreeId(V value);
 
-    protected void onFreeze() {
+	protected abstract boolean replaceInternal(Identifier source, Identifier target);
 
-    }
+	protected abstract boolean registerInternal(int rawId, Identifier id, V value);
 
-    @Override
-    public void onBeforeRemap() {
+	protected void onFreeze() {
 
-    }
-
-    @Override
-    public void onAfterRemap(Map<Integer, Integer> idRemapTable) {
-
-    }
-
-    // TODO
-    public boolean replace(Identifier source, Identifier target) {
-        if (!isFrozen() && contains(source) && contains(target)) {
-            return replaceInternal(source, target);
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean register(Identifier id, V value) {
-        if (!isFrozen()) {
-            int rawId = findNextFreeId(value);
-            if (rawId >= 0) {
-                return registerInternal(rawId, id, value);
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public final boolean isFrozen() {
-        return frozen;
-    }
-
-    public Set<Identifier> getRemovedEntries(Map<Integer, Identifier> idMap) {
-        Set<Identifier> missingIdsLocal = new HashSet<>();
-
-        for (Identifier id : idMap.values()) {
-            if (!contains(id)) {
-                missingIdsLocal.add(id);
-            }
-        }
-
-        return missingIdsLocal;
-    }
-
-    @Override
-    public void remap(BiMap<Integer, Identifier> idMap, boolean ignoreMissingEntries) throws RegistryMappingNotFoundException {
-        Map<Identifier, V> valueMap = new HashMap<>();
-        Map<Identifier, Integer> oldIds = new HashMap<>();
-        Map<Identifier, Integer> newIds = new HashMap<>(idMap.inverse());
-        Map<Integer, Integer> idRemapTable = new HashMap<>();
-        Set<Identifier> missingIdsMap = new HashSet<>();
-
-        for (V value : values()) {
-            Identifier id = getId(value);
-            oldIds.put(id, getRawId(value));
-            valueMap.put(id, value);
-            if (!idMap.containsValue(id)) {
-                missingIdsMap.add(id);
-            }
-        }
-
-        if (!ignoreMissingEntries) {
-            Set<Identifier> missingIdsLocal = getRemovedEntries(idMap);
-
-            if (missingIdsLocal.size() > 0) {
-                throw new RegistryMappingNotFoundException(missingIdsLocal);
-            }
-        }
-
-        for (IRemapListener listener : remapListeners) {
-            listener.onBeforeRemap();
-        }
-
-        boolean oldFrozen = frozen;
-        frozen = false;
-
-        for (Map.Entry<Integer, Identifier> entry : idMap.entrySet()) {
-            V value = valueMap.get(entry.getValue());
-            registerInternal(entry.getKey(), entry.getValue(), value);
-        }
-
-        for (Identifier id : missingIdsMap) {
-            V value = valueMap.get(id);
-            register(id, value);
-            newIds.put(id, getRawId(value));
-        }
-
-        for (Map.Entry<Identifier, Integer> oldId : oldIds.entrySet()) {
-            int oldRawId = oldId.getValue().intValue();
-            int newRawId = newIds.get(oldId.getKey()).intValue();
-            if (oldRawId != newRawId) {
-                idRemapTable.put(oldRawId, newRawId);
-            }
-        }
-
-        for (IRemapListener listener : remapListeners) {
-            listener.onAfterRemap(idRemapTable);
-        }
-
-        frozen = oldFrozen;
-    }
-
-    public Map<Integer, Identifier> getRawIdMap() {
-        Map<Integer, Identifier> idMap = new HashMap<>();
-        for (V value : values()) {
-            idMap.put(getRawId(value), getId(value));
-        }
-        return idMap;
-    }
+	}
 
 	@Override
-	public void setEvent(Event.Event1<IRegistryManager> event) {
-		this.event = event;
+	public void onBeforeRemap() {
+
+	}
+
+	@Override
+	public void onAfterRemap(Map<Integer, Integer> idRemapTable) {
+
+	}
+
+	// TODO
+	public boolean replace(Identifier source, Identifier target) {
+		if (!isFrozen() && contains(source) && contains(target)) {
+			return replaceInternal(source, target);
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean register(Identifier id, V value) {
+		if (!isFrozen()) {
+			int rawId = findNextFreeId(value);
+			if (rawId >= 0) {
+				return registerInternal(rawId, id, value);
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public final boolean isFrozen() {
+		return frozen;
+	}
+
+	public Set<Identifier> getRemovedEntries(Map<Integer, Identifier> idMap) {
+		Set<Identifier> missingIdsLocal = new HashSet<>();
+
+		for (Identifier id : idMap.values()) {
+			if (!contains(id)) {
+				missingIdsLocal.add(id);
+			}
+		}
+
+		return missingIdsLocal;
+	}
+
+	@Override
+	public void remap(BiMap<Integer, Identifier> idMap, boolean ignoreMissingEntries) throws RegistryMappingNotFoundException {
+		Map<Identifier, V> valueMap = new HashMap<>();
+		Map<Identifier, Integer> oldIds = new HashMap<>();
+		Map<Identifier, Integer> newIds = new HashMap<>(idMap.inverse());
+		Map<Integer, Integer> idRemapTable = new HashMap<>();
+		Set<Identifier> missingIdsMap = new HashSet<>();
+
+		for (V value : values()) {
+			Identifier id = getId(value);
+			oldIds.put(id, getRawId(value));
+			valueMap.put(id, value);
+			if (!idMap.containsValue(id)) {
+				missingIdsMap.add(id);
+			}
+		}
+
+		if (!ignoreMissingEntries) {
+			Set<Identifier> missingIdsLocal = getRemovedEntries(idMap);
+
+			if (missingIdsLocal.size() > 0) {
+				throw new RegistryMappingNotFoundException(missingIdsLocal);
+			}
+		}
+
+		for (IRemapListener listener : remapListeners) {
+			listener.onBeforeRemap();
+		}
+
+		boolean oldFrozen = frozen;
+		frozen = false;
+
+		for (Map.Entry<Integer, Identifier> entry : idMap.entrySet()) {
+			V value = valueMap.get(entry.getValue());
+			registerInternal(entry.getKey(), entry.getValue(), value);
+		}
+
+		for (Identifier id : missingIdsMap) {
+			V value = valueMap.get(id);
+			register(id, value);
+			newIds.put(id, getRawId(value));
+		}
+
+		for (Map.Entry<Identifier, Integer> oldId : oldIds.entrySet()) {
+			int oldRawId = oldId.getValue().intValue();
+			int newRawId = newIds.get(oldId.getKey()).intValue();
+			if (oldRawId != newRawId) {
+				idRemapTable.put(oldRawId, newRawId);
+			}
+		}
+
+		for (IRemapListener listener : remapListeners) {
+			listener.onAfterRemap(idRemapTable);
+		}
+
+		frozen = oldFrozen;
+	}
+
+	public Map<Integer, Identifier> getRawIdMap() {
+		Map<Integer, Identifier> idMap = new HashMap<>();
+		for (V value : values()) {
+			idMap.put(getRawId(value), getId(value));
+		}
+		return idMap;
 	}
 
 	@Override
 	public Event.Event1<IRegistryManager> getEvent() {
 		return event;
+	}
+
+	@Override
+	public void setEvent(Event.Event1<IRegistryManager> event) {
+		this.event = event;
 	}
 }

@@ -17,21 +17,25 @@
 package net.fabricmc.registry.manager;
 
 import net.fabricmc.api.Event;
-import net.fabricmc.api.Stage;
 import net.minecraft.util.Identifier;
 
 public interface IRegistryManager<V> {
-    V get(Identifier id);
-    Identifier getId(V value);
-    boolean contains(Identifier id);
-    Iterable<V> values();
+	V get(Identifier id);
 
-    boolean register(Identifier id, V value);
+	Identifier getId(V value);
 
-    boolean isFrozen();
-    void freeze();
+	boolean contains(Identifier id);
+
+	Iterable<V> values();
+
+	boolean register(Identifier id, V value);
+
+	boolean isFrozen();
+
+	void freeze();
+
+	Event.Event1<IRegistryManager> getEvent();
 
 	void setEvent(Event.Event1<IRegistryManager> event);
-	Event.Event1<IRegistryManager> getEvent();
 
 }

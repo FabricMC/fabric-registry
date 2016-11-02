@@ -18,24 +18,19 @@ package net.fabricmc.registry;
 
 import net.fabricmc.registry.manager.IRegistryManager;
 import net.minecraft.block.Block;
-import net.minecraft.command.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.block.ItemBlock;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 
-import javax.annotation.Nullable;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class RegistryTestMod {
-    public static final Identifier TESTBLOCK_1_ID = new Identifier("fabricregistrytest", "testblock1");
-    public static final Identifier TESTBLOCK_2_ID = new Identifier("fabricregistrytest", "testblock2");
-    private Block testBlock;
-    private Block testBlockTwo;
+	public static final Identifier TESTBLOCK_1_ID = new Identifier("fabricregistrytest", "testblock1");
+	public static final Identifier TESTBLOCK_2_ID = new Identifier("fabricregistrytest", "testblock2");
+	private Block testBlock;
+	private Block testBlockTwo;
 
-	public void init(){
+	public void init() {
 		RegistryMod.blockRM.getEvent().subscribe(new Consumer<IRegistryManager>() {
 			@Override
 			public void accept(IRegistryManager iRegistryManager) {
